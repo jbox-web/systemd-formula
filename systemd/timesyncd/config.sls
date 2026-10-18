@@ -53,8 +53,6 @@ timesyncd:
     - enable: True
     - require:
       - cmd: reload_systemd_configuration
-  timezone.system:
-    - name: {{ timezone }}
 
 # This is necessary in order to allow timesyncd to run on virtual machines.
 timesyncd-allowvirtual:

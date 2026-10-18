@@ -24,21 +24,22 @@ systemd_systemd_units_file_{{ unit }}_{{ unittype }}:
     - watch_in:
       - cmd: reload_systemd_configuration
 
+{#- Declarative states: the former cmd.wait pair only ran when the unit file
+    changed, so a unit disabled or stopped by hand was never brought back. #}
 systemd_systemd_units_cmd_enable_or_disable_{{ unit }}_{{ unittype }}:
-  cmd.wait:  # noqa: 213
-    - name: systemctl {{ unit_status }} {{ unit }}.{{ unittype }}
-    - watch:
+  service.{{ 'disabled' if unit_status == 'disable' else 'enabled' }}:
+    - name: {{ unit }}.{{ unittype }}
+    - require:
+      - file: systemd_systemd_units_file_{{ unit }}_{{ unittype }}
       - cmd: reload_systemd_configuration
 
       {% if (unittype == 'service' or unittype == 'path') %}
         {% set activation_status = unitconfig.status if unitconfig.status is defined and unitconfig.status == 'start' else 'stop' %}
 systemd_systemd_units_activate_or_deactivate_{{ unit }}_{{ unittype }}:
-  cmd.wait:  # noqa: 213
-    - name: systemctl {{ activation_status }} {{ unit }}.{{ unittype }}
+  service.{{ 'running' if activation_status == 'start' else 'dead' }}:
+    - name: {{ unit }}.{{ unittype }}
     - require:
-      - cmd: systemd_systemd_units_cmd_enable_or_disable_{{ unit }}_{{ unittype }}
-      - cmd: reload_systemd_configuration
-    - watch:
+      - service: systemd_systemd_units_cmd_enable_or_disable_{{ unit }}_{{ unittype }}
       - cmd: reload_systemd_configuration
       {% endif %}
     {% endfor %}
