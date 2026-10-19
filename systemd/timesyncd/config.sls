@@ -5,7 +5,6 @@ include:
 {%- from "systemd/libtofs.jinja" import files_switch with context %}
 
 {%- set timesyncd = systemd.get('timesyncd', {}) %}
-{%- set timezone = timesyncd.get('timezone', 'UTC') %}
 {%- set config = timesyncd.get('config', {}) %}
 
 {%- set virtual = salt['grains.get']('virtual') | default('physical', True) %}

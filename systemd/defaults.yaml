@@ -9,7 +9,6 @@ systemd:
 
   timesyncd:
     pkg: {}
-    timezone: 'UTC'
     config_source: file
     config:
       NTP: ''

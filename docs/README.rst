@@ -70,7 +70,7 @@ This state manages systemd-journald configuration
 
 ``systemd.timesyncd``
 ^^^^^^^^^^^^^^^^^^^^^
-This state installs systemd-timesyncd and configures both NTP and timezone
+This state installs systemd-timesyncd and configures NTP (the timezone is left to timezone-formula)
 
 ``systemd.timesyncd.config``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
